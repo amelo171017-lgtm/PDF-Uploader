@@ -1,7 +1,13 @@
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let supabase = null;
+
+if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.error('Variáveis de ambiente do Supabase não encontradas');
+}
 
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
@@ -108,6 +114,11 @@ function removeFile() {
 }
 
 async function uploadFile() {
+    if (!supabase) {
+        showError('Cliente Supabase não inicializado. Verifique as variáveis de ambiente.');
+        return;
+    }
+
     if (!selectedFile) {
         showError('Nenhum arquivo selecionado.');
         return;
@@ -172,6 +183,10 @@ async function uploadFile() {
 }
 
 async function saveToDatabase(filePath, originalName, fileSize, publicUrl, customName, year, type) {
+    if (!supabase) {
+        throw new Error('Cliente Supabase não inicializado');
+    }
+
     try {
         const { data, error } = await supabase
             .from('pdf_files')
