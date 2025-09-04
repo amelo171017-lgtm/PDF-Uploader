@@ -1,13 +1,7 @@
-const SUPABASE_URL = window.SUPABASE_URL;
-const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
+const SUPABASE_URL = 'https://ohkkrqmxtgxbmetpfwda.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oa2tycW14dGd4Ym1ldHBmd2RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5MjYxODIsImV4cCI6MjA3MjUwMjE4Mn0.jKirhDC_MoijRGzh2EJ5zMrCB7tS5A7XdeD3ZCZAToE';
 
-let supabase = null;
-
-if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-    console.error('Variáveis de ambiente do Supabase não encontradas');
-}
+let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
@@ -114,11 +108,6 @@ function removeFile() {
 }
 
 async function uploadFile() {
-    if (!supabase) {
-        showError('Cliente Supabase não inicializado. Verifique as variáveis de ambiente.');
-        return;
-    }
-
     if (!selectedFile) {
         showError('Nenhum arquivo selecionado.');
         return;
@@ -183,10 +172,6 @@ async function uploadFile() {
 }
 
 async function saveToDatabase(filePath, originalName, fileSize, publicUrl, customName, year, type) {
-    if (!supabase) {
-        throw new Error('Cliente Supabase não inicializado');
-    }
-
     try {
         const { data, error } = await supabase
             .from('pdf_files')
